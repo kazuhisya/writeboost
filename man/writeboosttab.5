@@ -1,0 +1,89 @@
+.TH WRITEBOOSTTAB 5 "2015-05-07" "writeboost" "File Formats"
+.SH NAME
+writeboosttab - mappings of cache(d) devices
+.SH SYNOPSIS
+.B /etc/writeboosttab
+.
+.SH DESCRIPTION
+The file
+.B writeboosttab
+contains information about mappings between caching and cached block devices
+for writeboost utility.
+
+Each mapping is described on a separate line;
+Empty lines and lines starting with '#' are ignored;
+Fields on each line are separated by tabs or spaces;
+
+.B The first field
+.RI ( dm_name )
+.RS
+This field describes the name of device-mapepr block device that will be
+created as result of mapping.
+.LP
+Typically after successful mapping the
+.I dm_name
+will appear in the
+.I /dev/mapper
+folder.
+.RE
+
+.B The second field
+.RI ( hdd_device )
+.RS
+This field describes path to the cached block device, typically "slow"
+(rotational) HDD.
+.RE
+
+.B The third field
+.RI ( ssd_device ).
+.RS
+This field describes path to the caching block device, typically "fast" SSD.
+.RE
+
+.B The forth field
+.RI ( options )
+.RS
+This optional field describes comma-separated list of options passed to
+dm-writeboost.
+.RE
+
+It is recommended to use reliable paths to block devices like
+.I /dev/disk/by-uuid/{UUID}
+or similar.
+.
+.SH EXAMPLES
+The following is an example of an entry in the
+.B /etc/writeboosttab
+file:
+.sp
+.RS 4
+.nf
+ cached_hdd  /dev/disk/by-uuid/2e8260bc-024c-4252-a695-a73898c974c7  /dev/disk/by-partuuid/43372b68-3407-45fa-9b2f-61afe9c26a68  allow_writeback=0,enable_writeback_modulator=0,sync_data_interval=3600
+.fi
+.RE
+.
+.SH FILES
+.IR /etc/writeboosttab
+.
+.SH "SEE ALSO"
+.BR writeboost (8)
+.
+.SH AUTHOR
+ Dmitry Smirnov <onlyjob@member.fsf.org>
+.
+.SH COPYRIGHT
+ Copyright 2015 Libre Solutions Pty Ltd (http://raid6.com.au)
+.
+.SH LICENSE
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 2 of the License, or
+ (at your option) any later version.
+
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.

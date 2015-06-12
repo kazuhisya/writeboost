@@ -1,0 +1,141 @@
+#!/bin/sh
+: <<=cut
+
+=head1 NAME
+
+writeboost - create dm-writeboost device-mapper mappings
+
+=head1 SYNOPSYS
+
+writeboost [ B<-u> ] [ B<device> ]
+
+=head1 DESCRIPTION
+
+writeboost is a utility to create dm-writeboost device-mapper
+mappings as per definitions in the "/etc/writeboosttab" file.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<device>
+
+Act on given device from the first field of the I</etc/writeboosttab> file.
+When not given writeboost acts on all devices listed in I</etc/writeboosttab>.
+
+=item B<-h>, B<--help>
+
+Show usage and options.
+
+=item B<-u>
+
+Un-map all mappings (or un-map only given B<device>).
+
+=back
+
+=head1 SEE ALSO
+
+I<writeboosttab>(5)
+
+=head1 DM-WRITEBOOST
+
+dm-writeboost is a software using log-structured caching to accelerate
+block IO. dm-writeboost is written by Akira Hayakawa <ruby.wktk@gmail.com>
+and implemented as loadable module for Linux.
+
+See more at https://github.com/akiradeveloper/dm-writeboost
+
+=head1 AUTHOR
+
+ Dmitry Smirnov <onlyjob@member.fsf.org>
+
+=head1 COPYRIGHT
+
+ Copyright 2015 Libre Solutions Pty Ltd (http://raid6.com.au)
+
+=head1 LICENSE
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 2 of the License, or
+ (at your option) any later version.
+
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+=cut
+
+U=""
+while [ -n "$1" ]; do
+    if [ "$1" = "-h" -o "$1" = "-?" -o "$1" = "--help" ]; then
+        perldoc "$0" || grep --before-context=999 --regexp '^=cut$' "$0"
+        exit 0
+    elif [ "$1" = "-u" ]; then
+        U=1
+    elif [ "${1#-}" = "$1" ]; then
+        DEV="$1"
+    else
+        echo -e "E: unknown option. Usage:" 1>&2
+        echo "    $(basename $0) [ -t THRESHOLD ] [ -n ] [ -0 ] directory"
+        exit 1
+    fi
+    shift
+done
+
+## writeboost
+while read -r M H S O; do
+    [ -z "${M%%#*}" ] && continue           ## skip comments.
+    [ -z "${M%%/*}" ] && continue           ## skip invalid map names.
+
+    ## skip empty lines / fields.
+    [ -z "$M" ] && continue
+    [ -z "$H" ] && continue
+    [ -z "$S" ] && continue
+
+    [ -n "${DEV}" -a ! "${DEV}" = "$M" ] && continue    ## act only on given device
+
+#    echo ":: $M : $H : $S : $O"
+    ## check block devices.
+    if [ -b "/dev/mapper/$M" ]; then        ## already mapped.
+        if [ -n "$U" ]; then
+            logger --tag writeboost --stderr "un-mapping $M"
+            dmsetup message "$M" 0 allow_writeback 0
+            ## https://github.com/akiradeveloper/dm-writeboost/issues/57
+            dmsetup suspend "$M"
+            dmsetup message "$M" 0 drop_caches
+            logger --tag writeboost --stderr "caches dropped; removing $M"
+            E=$(dmsetup remove "$M" 2>&1 || dmsetup resume "$M")   ## unmap or resume suspended device.
+            if [ -b "/dev/mapper/$M" ]; then
+                logger --tag writeboost --stderr "error: unable to un-map $M ($E)"
+            else
+                logger --tag writeboost --stderr "$M un-mapped."
+            fi
+        fi
+        continue
+    fi
+    [ -n "$U" ] && continue                 ## not mapping because un-map is requested.
+    [ -b "$H" ] || (logger --tag writeboost --stderr "error: $H is not a block device."; continue)
+    [ -b "$S" ] || (logger --tag writeboost --stderr "error: $S is not a block device."; continue)
+
+    B=$(blockdev --getsize $H)
+    [ -z "$B" ] && continue                 ## unable to get size of cached device.
+    logger --tag writeboost --stderr "mapping $M"
+    dmsetup create "$M" --table "0 $B writeboost $H $S"
+    if [ -b "/dev/mapper/$M" ]; then
+        logger --tag writeboost --stderr "$M mapped."
+        [ -z "$O" ] && continue
+        IFS_BAK="${IFS}"
+        IFS=','
+        for I in $O; do
+            dmsetup message "$M" 0 ${I%%=*} ${I##*=}
+        done
+        IFS="${IFS_BAK}"
+    else
+        logger --tag writeboost --stderr "error mapping $M"
+    fi
+done < "/etc/writeboosttab"
