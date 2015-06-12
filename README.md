@@ -4,20 +4,21 @@ device mappings.
 
 _[dm-writeboost](https://github.com/akiradeveloper/dm-writeboost)_
 is a software using log-structured caching to accelerate block IO.
-dm-writeboost is written by Akira Hayakawa <ruby.wktk@gmail.com> and
-implemented as loadable module for Linux.
+_[dm-writeboost](https://github.com/akiradeveloper/dm-writeboost)_
+is written by Akira Hayakawa <ruby.wktk@gmail.com> and implemented as
+loadable module for Linux.
 
 See more at https://github.com/akiradeveloper/dm-writeboost
 
-### AUTHOR
+#### AUTHOR
 
  Dmitry Smirnov <onlyjob@member.fsf.org>
 
-### COPYRIGHT
+#### COPYRIGHT
 
  Copyright 2015 Libre Solutions Pty Ltd (http://raid6.com.au)
 
-### LICENSE
+#### LICENSE
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
