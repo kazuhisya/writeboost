@@ -1,10 +1,11 @@
 _writeboost_ is a user-space utility to activate
-[dm-writeboost](https://github.com/akiradeveloper/dm-writeboost)
+_[dm-writeboost](https://github.com/akiradeveloper/dm-writeboost)_
 device mappings.
 
-dm-writeboost is a software using log-structured caching to accelerate
-block IO. dm-writeboost is written by Akira Hayakawa <ruby.wktk@gmail.com>
-and implemented as loadable module for Linux.
+_[dm-writeboost](https://github.com/akiradeveloper/dm-writeboost)_
+is a software using log-structured caching to accelerate block IO.
+dm-writeboost is written by Akira Hayakawa <ruby.wktk@gmail.com> and
+implemented as loadable module for Linux.
 
 See more at https://github.com/akiradeveloper/dm-writeboost
 
