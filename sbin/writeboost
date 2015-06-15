@@ -114,6 +114,7 @@ while read -r M H S O; do
             if [ -b "/dev/mapper/$M" ]; then
                 logger --tag writeboost --stderr "error: unable to un-map $M ($E)"
             else
+                dd if=/dev/zero of="$S" count=1 status=none
                 logger --tag writeboost --stderr "$M un-mapped."
             fi
         fi
