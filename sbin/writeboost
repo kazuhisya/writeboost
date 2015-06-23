@@ -104,8 +104,6 @@ while read -r M H S O; do
     if [ -b "/dev/mapper/$M" ]; then        ## already mapped.
         if [ -n "$U" ]; then
             logger --tag writeboost --stderr "un-mapping $M"
-            dmsetup message "$M" 0 allow_writeback 0
-            dmsetup message "$M" 0 enable_writeback_modulator 0
             ## https://github.com/akiradeveloper/dm-writeboost/issues/57
             dmsetup suspend "$M"
             dmsetup message "$M" 0 drop_caches
