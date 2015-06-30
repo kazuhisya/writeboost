@@ -45,6 +45,22 @@ and implemented as loadable module for Linux.
 
 See more at https://github.com/akiradeveloper/dm-writeboost
 
+=head1 AVAILABILITY
+
+ https://gitlab.com/onlyjob/writeboost
+
+=head1 VERSION
+
+ 1.20150630
+
+=head1 DONATIONS
+
+ Donations are much appreciated, please consider donating:
+
+   Bitcoins : 15nCM6Rs4zoQKhBV55XxcPfwPKeAEHPbAn
+  Litecoins : LZMLDNSfy3refx7bKQtEvPyYSbNHsfzLRZ
+ AUD/PayPal : https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=onlyjob%40gmail%2ecom&lc=AU&currency_code=AUD
+
 =head1 AUTHOR
 
  Dmitry Smirnov <onlyjob@member.fsf.org>
