@@ -12,3 +12,7 @@ clean:
 
 #install: all
 #	install --preserve-timestamps --verbose
+
+.PHONY: test
+test:
+	sh -n sbin/writeboost
