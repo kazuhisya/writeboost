@@ -71,6 +71,7 @@ See more at https://github.com/akiradeveloper/dm-writeboost
 =cut
 
 U=""
+DEV=""
 while [ -n "$1" ]; do
     if [ "$1" = "-h" -o "$1" = "-?" -o "$1" = "--help" ]; then
         perldoc "$0" || grep --before-context=999 --regexp '^=cut$' "$0"
@@ -86,6 +87,8 @@ while [ -n "$1" ]; do
     fi
     shift
 done
+
+set -u
 
 ## writeboost
 while read -r M H S O; do
