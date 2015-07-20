@@ -123,6 +123,7 @@ while read -r M H S O; do
     if [ -b "/dev/mapper/$M" ]; then        ## already mapped.
         if [ -n "$U" ]; then
             logger --tag writeboost --stderr "un-mapping $M"
+            (
             ## https://github.com/akiradeveloper/dm-writeboost/issues/57
             dmsetup suspend "$M"
             dmsetup message "$M" 0 drop_caches
@@ -134,6 +135,7 @@ while read -r M H S O; do
                 dd if=/dev/zero of="$S" count=1 bs=4096 oflag=direct 2>>/dev/null
                 logger --tag writeboost --stderr "$M un-mapped."
             fi
+            ) &
         fi
         continue
     fi
@@ -158,3 +160,6 @@ while read -r M H S O; do
         logger --tag writeboost --stderr "error mapping $M"
     fi
 done < "/etc/writeboosttab"
+
+## wait for background jobs.
+wait
