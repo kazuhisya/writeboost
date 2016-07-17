@@ -16,7 +16,7 @@ See more at https://github.com/akiradeveloper/dm-writeboost
 
 #### COPYRIGHT
 
- Copyright 2015 Libre Solutions Pty Ltd (http://raid6.com.au)
+ Copyright 2015-2016 Libre Solutions Pty Ltd (http://raid6.com.au)
 
 #### LICENSE
 
