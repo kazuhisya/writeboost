@@ -1,16 +1,18 @@
 [Unit]
 Description=(dm-)writeboost mapper
 Documentation=man:writeboost
-Before=cryptsetup-pre.target local-fs-pre.target
 DefaultDependencies=false
+Before=cryptsetup.target
+Before=local-fs.target
 
 [Service]
 Type=oneshot
-RemainAfterExit=yes
+RemainAfterExit=no
 TimeoutStartSec=600
 ExecStart=/sbin/writeboost
 ExecStop=/sbin/writeboost -u
 
 [Install]
-WantedBy=local-fs-pre.target cryptsetup-pre.target
+WantedBy=cryptsetup-pre.target
+WantedBy=local-fs-pre.target
 #Alias=dm-writeboost.service
