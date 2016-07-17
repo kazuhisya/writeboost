@@ -95,7 +95,7 @@ while [ -n "$1" ]; do
     elif [ "$1" = "-u" ]; then
         U=1
     elif [ "${1#-}" = "$1" ]; then
-        DEV="$1"
+        DEV="${1##/dev/mapper/}"
     else
         echo -e "E: unknown option. Usage:" 1>&2
         echo "    $(basename $0) [ -t THRESHOLD ] [ -n ] [ -0 ] directory"
