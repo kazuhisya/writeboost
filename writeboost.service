@@ -7,7 +7,7 @@ DefaultDependencies=false
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-#TimeoutStartSec=0
+TimeoutStartSec=600
 ExecStart=/sbin/writeboost
 ExecStop=/sbin/writeboost -u
 
