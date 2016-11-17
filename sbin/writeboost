@@ -143,7 +143,7 @@ while read -r M H S O; do
     [ -b "$H" ] || (logger --tag writeboost --stderr "error: $H is not a block device."; continue)
     [ -b "$S" ] || (logger --tag writeboost --stderr "error: $S is not a block device."; continue)
 
-    B=$(blockdev --getsize $H)
+    B=$(blockdev --getsz $H)
     [ -z "$B" ] && continue                 ## unable to get size of cached device.
     logger --tag writeboost --stderr "mapping $M"
     dmsetup create "$M" --table "0 $B writeboost $H $S"
