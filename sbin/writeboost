@@ -145,17 +145,24 @@ while read -r M H S O; do
 
     B=$(blockdev --getsz $H)
     [ -z "$B" ] && continue                 ## unable to get size of cached device.
+
+	if [ -n "$O" ]; then
+		opts=''
+		opts_n=0
+		IFS_BAK="${IFS}"
+		IFS=','
+		for I in $O; do
+			opts="$opts ${I%%=*} ${I##*=}"
+			opts_n=$(( opts_n + 2 ))
+		done
+		IFS="${IFS_BAK}"
+	fi
+
     logger --tag writeboost --stderr "mapping $M"
-    dmsetup create "$M" --table "0 $B writeboost $H $S"
+    dmsetup create "$M" --table "0 $B writeboost $H $S $opts_n $opts"
+
     if [ -b "/dev/mapper/$M" ]; then
         logger --tag writeboost --stderr "$M mapped."
-        [ -z "$O" ] && continue
-        IFS_BAK="${IFS}"
-        IFS=','
-        for I in $O; do
-            dmsetup message "$M" 0 ${I%%=*} ${I##*=}
-        done
-        IFS="${IFS_BAK}"
     else
         logger --tag writeboost --stderr "error mapping $M"
     fi
